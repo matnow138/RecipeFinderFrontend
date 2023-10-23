@@ -1,0 +1,4 @@
+offers:
+  client:
+    url: http://localhost:8082/
+
