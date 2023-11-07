@@ -5,6 +5,7 @@ import com.recipe.finder.external.ProductDto;
 import com.recipe.finder.external.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -20,7 +21,7 @@ import java.util.List;
 @Route("")
 @PageTitle("Main Page")
 public class Frontend extends VerticalLayout {
-    Grid<Product> productGrid = new Grid<>(Product.class);
+    Grid<Product> productGrid = new Grid<>(Product.class, false);
 
     private final ProductService productService;
 
@@ -64,7 +65,7 @@ public class Frontend extends VerticalLayout {
         productGrid.addComponentColumn(remove -> {
             Button removeProduct = new Button("Remove product");
             removeProduct.addClickListener(event -> {
-                logger.info("sent recipe {}", remove);
+                logger.info("removed recipe {}", remove);
                     productService.deleteProduct(ProductDto.fromDomain(remove));
                 updateGrid();
             });
@@ -95,9 +96,26 @@ public class Frontend extends VerticalLayout {
         return toolbar;
     }
 
+
     private void updateGrid(){
         List<Product> productList = productService.getProducts();
-        productGrid.setItems(productList);
+        GridListDataView<Product> dataView = productGrid.setItems(productList);
+        filterText.addValueChangeListener(e -> dataView.refreshAll());
+        dataView.addFilter(product -> {
+            String searchTerm = filterText.getValue().trim();
+            if (searchTerm.isEmpty())
+                return true;
+
+            return matches(product.name(),
+                    searchTerm);
+        });
+
+        //productGrid.setItems(productList);
+    }
+
+    private boolean matches(String value, String searchTerm) {
+        return searchTerm == null || searchTerm.isEmpty()
+                || value.toLowerCase().contains(searchTerm.toLowerCase());
     }
 
 

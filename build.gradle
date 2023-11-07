@@ -5,7 +5,7 @@ plugins {
     id 'com.vaadin' version '24.1.4'
 }
 
-group = 'com.recipe'
+group = 'com.frontend'
 version = '0.0.1-SNAPSHOT'
 
 java {
