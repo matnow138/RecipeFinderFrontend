@@ -17,8 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-
-@Route("")
+@Route("Storage")
 @PageTitle("Main Page")
 public class Frontend extends VerticalLayout {
     Grid<Product> productGrid = new Grid<>(Product.class, false);
@@ -28,6 +27,8 @@ public class Frontend extends VerticalLayout {
 
     TextField filterText = new TextField();
     private final Logger logger = LoggerFactory.getLogger(Frontend.class);
+
+
 
     public Frontend(ProductService productService){
         this.productService = productService;
@@ -90,7 +91,6 @@ public class Frontend extends VerticalLayout {
         findRecipeButton.addClickListener(event -> findRecipeButton.getUI()
                 .flatMap(ui -> ui.navigate(RecipesView.class))
         );
-
         var toolbar = new HorizontalLayout(filterText, addContactButton,findRecipeButton);
         toolbar.addClassName("toolbar");
         return toolbar;
